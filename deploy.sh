@@ -11,25 +11,24 @@ deploy_acmesh() {
 	echo "acme.sh will be deployed inside ubios-cert to persist firmware updates"
 	ACME_URL=$(curl -s https://api.github.com/repos/acmesh-official/acme.sh/releases/latest | grep tarball_url | awk '{ print $2 }' | sed 's/,$//' | sed 's/"//g')
 	echo "Fetching latest ACME from ${ACME_URL}"
-	curl -L "${ACME_URL}" > acmesh.tar.gz 
+	curl -L "${ACME_URL}" >acmesh.tar.gz
 	echo "Extracting ACME ${SCRIPT_DIR}/ubios-cert/acme.sh"
 	mkdir -p "${SCRIPT_DIR}/ubios-cert/acme.sh"
-	tar -xvf acmesh.tar.gz --directory="${SCRIPT_DIR}/ubios-cert/acme.sh" --strip-components=1 
+	tar -xvf acmesh.tar.gz --directory="${SCRIPT_DIR}/ubios-cert/acme.sh" --strip-components=1
 }
 
-if [ $(echo ${FIRMWARE_VER} | sed 's#\..*$##g') -gt 1 ]
-	then
-        export DATA_DIR="/data"
-	else
-		echo "Unsupported firmware: ${FIRMWARE_VER}"
-		exit 1
+if [ $(echo ${FIRMWARE_VER} | sed 's#\..*$##g') -gt 1 ]; then
+	export DATA_DIR="/data"
+else
+	echo "Unsupported firmware: ${FIRMWARE_VER}"
+	exit 1
 fi
 
 case "${MODEL}" in
-	"UniFi Dream Machine Pro"|"UniFi Dream Machine"|"UniFi Dream Router"|"UniFi Dream Machine SE")
+"UniFi Dream Machine Pro" | "UniFi Dream Machine" | "UniFi Dream Router" | "UniFi Dream Machine SE" | "UniFi Cloud Gateway Ultra")
 	echo "${MODEL} running firmware ${FIRMWARE_VER} detected, installing ubios-cert in ${DATA_DIR}..."
 	;;
-	*)
+*)
 	echo "Unsupported model: ${MODEL}"
 	exit 1
 	;;
